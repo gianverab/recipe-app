@@ -1,5 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import SearchRecipe from './components/SearchRecipe';
+import Recipe from './components/Recipe';
 
 const App = () => {
   const APP_ID = 'd0bc38cd';
@@ -7,10 +9,13 @@ const App = () => {
 
   const API = `https://api.edamam.com/search?q=chicken&app_id=${APP_ID}&app_key=${APP_KEY}`;
 
+  const [recipes, setRecipes] = useState([]);
+
   const getRecipes = async () => {
     const response = await fetch(API);
     const data = await response.json();
-    console.log(data);
+    setRecipes(data.hits);
+    console.log(data.hits);
   };
 
   useEffect(() => {
@@ -19,7 +24,13 @@ const App = () => {
 
   return (
     <Wrapper>
-      <h1>Hello Recipe App !!</h1>
+      <h1>Hello Ripple App !!</h1>
+      <SearchRecipe />
+      <RecipeList>
+        {recipes.map(recipe => (
+          <Recipe key={recipe.recipe.label} title={recipe.recipe.label} image={recipe.recipe.image} />
+        ))}
+      </RecipeList>
     </Wrapper>
   );
 };
@@ -27,6 +38,12 @@ const App = () => {
 export default App;
 
 const Wrapper = styled.div`
-  margin: 0 auto;
+  background: #fff;
   text-align: center;
+`;
+
+const RecipeList = styled.div`
+  display: grid;
+  grid-gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 `;
